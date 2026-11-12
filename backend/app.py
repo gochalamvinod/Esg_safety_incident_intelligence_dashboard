@@ -3,6 +3,8 @@ FastAPI Backend Application for Greenko ESG & Safety Incident Intelligence Dashb
 Exposes clean REST APIs and serves the smooth React Dashboard.
 """
 
+import os
+import urllib.request
 from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, HTTPException
@@ -26,9 +28,17 @@ class IncidentInput(BaseModel):
     site_type: Optional[str] = "Solar PV"
 
 def _get_html(file_path: Path) -> str:
+    frontend_url = os.environ.get("FRONTEND_URL")
+    if frontend_url:
+        try:
+            req = urllib.request.Request(frontend_url, headers={"User-Agent": "FastAPI-Services-Gateway"})
+            with urllib.request.urlopen(req, timeout=3) as res:
+                return res.read().decode("utf-8")
+        except Exception:
+            pass
     if file_path.exists():
         return file_path.read_text(encoding="utf-8")
-    for alt in [BASE_DIR / "index.html", FRONTEND_FILE]:
+    for alt in [BASE_DIR / "frontend" / "dist" / "index.html", BASE_DIR / "index.html", FRONTEND_FILE]:
         if alt.exists(): return alt.read_text(encoding="utf-8")
     return "<html><body><h2>ESG & Safety Incident Intelligence Dashboard</h2></body></html>"
 
