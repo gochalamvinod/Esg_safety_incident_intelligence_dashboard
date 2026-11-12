@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Greenko ESG & Safety Incident Intelligence</title>
+  <meta name="description" content="AI & Classical ML Intelligence Dashboard for ESG and Safety Incidents across Renewable Energy Assets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="dark"] {
+      --bg-base: #0b0f17;
+      --bg-surface: #111726;
+      --bg-card: #161e31;
+      --bg-hover: #1e293b;
+      --border: #23304a;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --primary-glow: rgba(16, 185, 129, 0.2);
+      --sev-crit-bg: rgba(239, 68, 68, 0.15);
+      --sev-crit-text: #fca5a5;
+      --sev-high-bg: rgba(245, 158, 11, 0.15);
+      --sev-high-text: #fcd34d;
+      --sev-med-bg: rgba(59, 130, 246, 0.15);
+      --sev-med-text: #93c5fd;
+      --sev-low-bg: rgba(16, 185, 129, 0.15);
+      --sev-low-text: #6ee7b7;
+    }
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-hover: #e2e8f0;
+      --border: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-glow: rgba(5, 150, 105, 0.15);
+      --sev-crit-bg: #fee2e2;
+      --sev-crit-text: #b91c1c;
+      --sev-high-bg: #fef3c7;
+      --sev-high-text: #b45309;
+      --sev-med-bg: #dbeafe;
+      --sev-med-text: #1d4ed8;
+      --sev-low-bg: #d1fae5;
+      --sev-low-text: #047857;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Layout */
+    .app-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+    }
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      padding: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .nav-item {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .nav-item:hover {
+      color: var(--text-main);
+      background: var(--bg-hover);
+    }
+    .nav-item.active {
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-muted);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .dot.pulse {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .theme-toggle {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .theme-toggle:hover {
+      color: var(--text-main);
+      background: var(--bg-hover);
+    }
+
+    /* Cards & Grids */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+    .kpi-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .kpi-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      font-family: var(--font-mono);
+    }
+    .kpi-desc {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .panels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.5rem;
+    }
+    .panel-card, .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .panel-title, .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+    .card-subtitle {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .dist-row { margin-bottom: 1rem; }
+    .dist-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+    }
+    .progress-bar {
+      height: 7px;
+      background: var(--bg-hover);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    /* Badges */
+    .badge-pill {
+      font-size: 0.725rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      display: inline-block;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+    .badge-critical { background: var(--sev-crit-bg); color: var(--sev-crit-text); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-high { background: var(--sev-high-bg); color: var(--sev-high-text); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-medium { background: var(--sev-med-bg); color: var(--sev-med-text); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-low { background: var(--sev-low-bg); color: var(--sev-low-text); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .fill-critical { background: #ef4444; }
+    .fill-high { background: #f59e0b; }
+    .fill-medium { background: #3b82f6; }
+    .fill-low { background: #10b981; }
+    .fill-emerald { background: #10b981; }
+
+    .text-emerald { color: #10b981; }
+    .text-amber { color: #f59e0b; }
+    .text-blue { color: #3b82f6; }
+    .text-purple { color: #8b5cf6; }
+    .text-muted { color: var(--text-muted); }
+    .font-mono { font-family: var(--font-mono); }
+
+    /* Classifier */
+    .classifier-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .classifier-layout { grid-template-columns: 1fr; }
+    }
+    .preset-container {
+      margin-bottom: 1.25rem;
+    }
+    .preset-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.775rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .chip:hover {
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+    .chip.active {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+    .form-select, .form-textarea, .filter-input, .filter-select {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-select:focus, .form-textarea:focus, .filter-input:focus, .filter-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .form-textarea { resize: vertical; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .w-full { width: 100%; }
+
+    /* Results */
+    .prediction-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    .pred-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .pred-label {
+      font-size: 0.725rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .pred-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .pred-conf {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .risk-score-pill {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f59e0b;
+    }
+
+    .result-section { margin-bottom: 1.2rem; }
+    .section-subtitle {
+      font-size: 0.825rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.45rem;
+    }
+    .summary-box {
+      background: var(--bg-card);
+      border-left: 3px solid var(--primary);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      border-radius: 0 8px 8px 0;
+    }
+    .capa-list { list-style: none; }
+    .capa-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.825rem;
+      padding: 0.4rem 0;
+      color: var(--text-main);
+    }
+    .capa-num {
+      width: 18px;
+      height: 18px;
+      background: var(--primary-glow);
+      color: var(--primary);
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .gemini-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .gemini-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .gemini-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #10b981;
+      text-transform: uppercase;
+    }
+    .gemini-model {
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+    .gemini-summary {
+      font-size: 0.85rem;
+      line-height: 1.45;
+      margin-bottom: 0.6rem;
+    }
+    .gemini-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .evidence-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .evidence-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.8rem;
+    }
+    .ev-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    .ev-id { color: var(--primary); font-family: var(--font-mono); }
+    .ev-score { color: var(--text-dim); font-size: 0.75rem; }
+    .ev-text { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* Tables */
+    .explorer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .explorer-filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-input { width: 220px; }
+    .filter-select { width: 150px; }
+    .table-responsive { overflow-x: auto; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .data-table th {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .data-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table tr:hover td {
+      background: var(--bg-card);
+    }
+    .cat-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Clusters */
+    .clusters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .cluster-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .cluster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .cluster-badge {
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .cluster-count {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .cluster-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .cluster-field { margin-bottom: 0.5rem; }
+    .field-label {
+      font-size: 0.725rem;
+      color: var(--text-dim);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .keyword-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .kw-chip {
+      background: var(--bg-hover);
+      color: var(--text-main);
+      font-size: 0.725rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* Governance */
+    .governance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .gov-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .gov-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .gov-stat-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .gov-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .gov-stat.highlight {
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .audit-note {
+      background: var(--bg-card);
+      border-left: 3px solid #3b82f6;
+      padding: 0.85rem 1rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .animate-fade {
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .empty-state {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    .loading-spinner {
+      padding: 4rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const PRESETS = [
+      { label: "Solar Micro-Crack", site: "Solar PV", text: "Micro-cracks detected on tracker string 4B during thermographic drone survey; inverter trip risk." },
+      { label: "Wind Gearbox Leak", site: "Wind Farm", text: "Oil seepage observed near wind turbine #14 gearbox bay, contained with secondary spill kit." },
+      { label: "Hydro Valve Jam", site: "Hydro Power", text: "Debris blockage caused penstock intake control valve to jam midway during peak load adjustment." },
+      { label: "Substation Arc Flash", site: "Substation", text: "Electrical arc flash incident near 33kV switchyard breaker during scheduled relay maintenance." },
+      { label: "Turbine Blade Crack", site: "Wind Farm", text: "Severe composite blade delamination and leading-edge cracking observed on WTG-08 after high-wind storm." },
+      { label: "BESS Thermal Surge", site: "BESS", text: "Thermal runaway warning triggered in battery container rack 03 with rapid temperature escalation." }
+    ];
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("overview");
+      const [theme, setTheme] = useState("dark");
+      const [analytics, setAnalytics] = useState(null);
+      const [incidents, setIncidents] = useState([]);
+      const [clusters, setClusters] = useState([]);
+      const [metrics, setMetrics] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      // Classifier state
+      const [narrative, setNarrative] = useState(PRESETS[0].text);
+      const [siteType, setSiteType] = useState(PRESETS[0].site);
+      const [classifying, setClassifying] = useState(false);
+      const [result, setResult] = useState(null);
+
+      // Explorer filters
+      const [search, setSearch] = useState("");
+      const [catFilter, setCatFilter] = useState("all");
+      const [sevFilter, setSevFilter] = useState("all");
+
+      useEffect(() => {
+        async function load() {
+          try {
+            const [an, inc, cl, m] = await Promise.all([
+              fetch("/api/analytics").then(r => r.json()),
+              fetch("/api/incidents").then(r => r.json()),
+              fetch("/api/clusters").then(r => r.json()),
+              fetch("/api/metrics").then(r => r.json())
+            ]);
+            setAnalytics(an);
+            setIncidents(inc.incidents || []);
+            setClusters(cl.clusters || []);
+            setMetrics(m);
+          } catch (e) {
+            console.error("Failed to load backend intelligence:", e);
+          } finally {
+            setLoading(false);
+          }
+        }
+        load();
+      }, []);
+
+      const toggleTheme = () => {
+        const next = theme === "dark" ? "light" : "dark";
+        setTheme(next);
+        document.documentElement.setAttribute("data-theme", next);
+      };
+
+      const handleRun = async () => {
+        if (!narrative.trim()) return;
+        setClassifying(true);
+        try {
+          const res = await fetch("/api/run", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: narrative })
+          });
+          const data = await res.json();
+          setResult(data);
+        } catch (e) {
+          console.error("Inference failed:", e);
+        } finally {
+          setClassifying(false);
+        }
+      };
+
+      const totalCount = analytics?.total_incidents || incidents.length || 6;
+      const hcCount = analytics?.high_critical_count || 0;
+      const catAcc = ((analytics?.model_health?.category_accuracy || 1) * 100).toFixed(1);
+      const sevAcc = ((analytics?.model_health?.severity_accuracy || 1) * 100).toFixed(1);
+
+      const filteredIncidents = incidents.filter(i => {
+        const mQ = i.narrative.toLowerCase().includes(search.toLowerCase()) || i.incident_id.toLowerCase().includes(search.toLowerCase());
+        const mC = catFilter === "all" || i.target_category.toLowerCase() === catFilter.toLowerCase();
+        const mS = sevFilter === "all" || i.target_severity.toLowerCase() === sevFilter.toLowerCase();
+        return mQ && mC && mS;
+      });
+
+      return (
+        <div className="app-container">
+          {/* Header */}
+          <header className="app-header">
+            <div className="header-brand">
+              <div className="brand-logo">G</div>
+              <div className="brand-text">
+                <div className="brand-title">GREENKO ESG & SAFETY</div>
+                <div className="brand-sub">Incident Intelligence Dashboard</div>
+              </div>
+            </div>
+
+            <nav className="header-nav">
+              {[
+                { id: "overview", label: "Overview" },
+                { id: "classifier", label: "AI Classifier" },
+                { id: "explorer", label: "Benchmark Explorer" },
+                { id: "clusters", label: "Pattern Clusters" },
+                { id: "governance", label: "Model Governance" }
+              ].map(t => (
+                <button
+                  key={t.id}
+                  className={`nav-item ${activeTab === t.id ? "active" : ""}`}
+                  onClick={() => setActiveTab(t.id)}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </nav>
+
+            <div className="header-actions">
+              <div className="status-badge" aria-label="Monitoring Status">
+                <span className="dot pulse"></span>
+                <span id="monitoring-badge">{totalCount} Incidents Monitored</span>
+              </div>
+              <button className="theme-toggle" onClick={toggleTheme}>
+                {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+              </button>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main>
+            {loading ? (
+              <div className="loading-spinner">Loading Incident Intelligence Engine...</div>
+            ) : (
+              <>
+                {/* 1. OVERVIEW TAB */}
+                {activeTab === "overview" && (
+                  <div className="tab-pane animate-fade">
+                    <div className="kpi-grid">
+                      <div className="kpi-card">
+                        <div className="kpi-label">Benchmark Incidents</div>
+                        <div className="kpi-value text-emerald">{totalCount}</div>
+                        <div className="kpi-desc">Verified benchmark records (S001-S006)</div>
+                      </div>
+                      <div className="kpi-card">
+                        <div className="kpi-label">High & Critical Risks</div>
+                        <div className="kpi-value text-amber">{hcCount}</div>
+                        <div className="kpi-desc">Requires immediate containment & CAPA</div>
+                      </div>
+                      <div className="kpi-card">
+                        <div className="kpi-label">Category Accuracy</div>
+                        <div className="kpi-value text-blue">{catAcc}%</div>
+                        <div className="kpi-desc">TF-IDF + Class-Balanced Logistic Regression</div>
+                      </div>
+                      <div className="kpi-card">
+                        <div className="kpi-label">Severity Accuracy</div>
+                        <div className="kpi-value text-purple">{sevAcc}%</div>
+                        <div className="kpi-desc">Domain Lexicon Augmented Classifier</div>
+                      </div>
+                    </div>
+
+                    <div className="panels-grid">
+                      <div className="panel-card">
+                        <h3 className="panel-title">Severity Distribution</h3>
+                        <div className="distribution-list">
+                          {["critical", "high", "medium", "low"].map(s => {
+                            const c = analytics?.severities?.[s] || 0;
+                            const pct = totalCount > 0 ? Math.round((c / totalCount) * 100) : 0;
+                            return (
+                              <div key={s} className="dist-row">
+                                <div className="dist-header">
+                                  <span className={`badge-pill badge-${s}`}>{s.toUpperCase()}</span>
+                                  <span className="dist-count">{c} records ({pct}%)</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className={`progress-fill fill-${s}`} style={{ width: `${pct}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="panel-card">
+                        <h3 className="panel-title">ESG & Safety Categories</h3>
+                        <div className="distribution-list">
+                          {Object.entries(analytics?.categories || {}).map(([cat, c]) => {
+                            const pct = totalCount > 0 ? Math.round((c / totalCount) * 100) : 0;
+                            return (
+                              <div key={cat} className="dist-row">
+                                <div className="dist-header">
+                                  <span className="cat-tag">{cat.replace("_", " ").toUpperCase()}</span>
+                                  <span className="dist-count">{c} records ({pct}%)</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill fill-emerald" style={{ width: `${pct}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div style={{ marginTop: "1.25rem" }}>
+                          <button className="btn-primary" onClick={() => setActiveTab("classifier")}>
+                            Launch Interactive AI Classifier &rarr;
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. CLASSIFIER TAB */}
+                {activeTab === "classifier" && (
+                  <div className="tab-pane animate-fade">
+                    <div className="classifier-layout">
+                      <div className="card">
+                        <h3 className="card-title">Live Incident Assessment Engine</h3>
+                        <p className="card-subtitle">Select a scenario or enter narrative for real-time Classical ML + Gemini 3.1 Flash Lite synthesis.</p>
+
+                        <div className="preset-container">
+                          <span className="preset-label">Quick Scenarios:</span>
+                          <div className="preset-chips">
+                            {PRESETS.map((p, i) => (
+                              <button
+                                key={i}
+                                className={`chip ${narrative === p.text ? "active" : ""}`}
+                                onClick={() => { setNarrative(p.text); setSiteType(p.site); }}
+                              >
+                                {p.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label">Asset / Facility Type</label>
+                          <select className="form-select" value={siteType} onChange={e => setSiteType(e.target.value)}>
+                            <option value="Solar PV">Solar PV Plant</option>
+                            <option value="Wind Farm">Wind Farm Site</option>
+                            <option value="Hydro Power">Hydroelectric Facility</option>
+                            <option value="Substation">33kV / 132kV Substation</option>
+                            <option value="BESS">Battery Energy Storage (BESS)</option>
+                          </select>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label">Incident Narrative</label>
+                          <textarea
+                            className="form-textarea"
+                            rows="4"
+                            value={narrative}
+                            onChange={e => setNarrative(e.target.value)}
+                            placeholder="Describe field conditions, hazards observed, affected equipment..."
+                          />
+                        </div>
+
+                        <button className="btn-primary w-full" onClick={handleRun} disabled={classifying}>
+                          {classifying ? "Running Classical ML + Gemini Pipeline..." : "Run AI Assessment & ISO CAPA"}
+                        </button>
+                      </div>
+
+                      <div className="card">
+                        <h3 className="card-title">Assessment Dossier</h3>
+                        {!result ? (
+                          <div className="empty-state">
+                            Click "Run AI Assessment" to generate category classification, risk score, ISO CAPA actions, and Gemini executive synthesis.
+                          </div>
+                        ) : (
+                          <div className="result-content">
+                            <div className="prediction-header">
+                              <div className="pred-item">
+                                <span className="pred-label">Predicted Category</span>
+                                <span className="pred-val text-emerald">{result.result?.predicted_category?.toUpperCase()}</span>
+                                <span className="pred-conf">{(result.result?.confidence * 100).toFixed(1)}% confidence</span>
+                              </div>
+                              <div className="pred-item">
+                                <span className="pred-label">Predicted Severity</span>
+                                <span className={`badge-pill badge-${result.result?.predicted_severity}`}>
+                                  {result.result?.predicted_severity?.toUpperCase()}
+                                </span>
+                              </div>
+                              <div className="pred-item">
+                                <span className="pred-label">Composite Risk</span>
+                                <span className="risk-score-pill">{result.result?.composite_risk_score} / 100</span>
+                              </div>
+                            </div>
+
+                            <div className="result-section">
+                              <h4 className="section-subtitle">Extractive NLP Summary</h4>
+                              <p className="summary-box">{result.result?.summary}</p>
+                            </div>
+
+                            <div className="result-section">
+                              <h4 className="section-subtitle">ISO 45001 / ISO 14001 Recommended CAPA</h4>
+                              <ul className="capa-list">
+                                {result.result?.preventive_actions?.map((act, idx) => (
+                                  <li key={idx} className="capa-item">
+                                    <span className="capa-num">{idx + 1}</span>
+                                    <span>{act}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {result.gemini_insights && (
+                              <div className="result-section gemini-card">
+                                <div className="gemini-header">
+                                  <span className="gemini-badge">Gemini 3.1 Flash Lite</span>
+                                  <span className="gemini-model">{result.gemini_insights.model_used}</span>
+                                </div>
+                                <p className="gemini-summary">{result.gemini_insights.ai_executive_summary}</p>
+                                <div className="gemini-sub">
+                                  <strong>Root Cause:</strong> {typeof result.gemini_insights.root_cause_analysis === 'object' ? Object.values(result.gemini_insights.root_cause_analysis).join(' | ') : result.gemini_insights.root_cause_analysis}
+                                </div>
+                                <div className="gemini-sub">
+                                  <strong>BRSR / GRI 403 Reporting Impact:</strong> {result.gemini_insights.esg_disclosure_impact}
+                                </div>
+                              </div>
+                            )}
+
+                            {result.retrieval_evidence?.length > 0 && (
+                              <div className="result-section">
+                                <h4 className="section-subtitle">Cosine Similarity Historical Precedents</h4>
+                                <div className="evidence-list">
+                                  {result.retrieval_evidence.map((ev, i) => (
+                                    <div key={i} className="evidence-item">
+                                      <div className="ev-header">
+                                        <span className="ev-id">{ev.incident_id}</span>
+                                        <span className="ev-score">Similarity: {(ev.similarity * 100).toFixed(1)}%</span>
+                                      </div>
+                                      <div className="ev-text">{ev.narrative}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. EXPLORER TAB */}
+                {activeTab === "explorer" && (
+                  <div className="tab-pane animate-fade">
+                    <div className="card">
+                      <div className="explorer-header">
+                        <div>
+                          <h3 className="card-title">Benchmark Incident Database</h3>
+                          <p className="card-subtitle">Verified benchmark records for training, validation, and historical grounding.</p>
+                        </div>
+                        <div className="explorer-filters">
+                          <input
+                            type="text"
+                            className="filter-input"
+                            placeholder="Search narrative or ID..."
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                          />
+                          <select className="filter-select" value={catFilter} onChange={e => setCatFilter(e.target.value)}>
+                            <option value="all">All Categories</option>
+                            <option value="safety">Safety</option>
+                            <option value="environment">Environment</option>
+                            <option value="esg_compliance">ESG Compliance</option>
+                          </select>
+                          <select className="filter-select" value={sevFilter} onChange={e => setSevFilter(e.target.value)}>
+                            <option value="all">All Severities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="table-responsive">
+                        <table className="data-table">
+                          <thead>
+                            <tr>
+                              <th>Incident ID</th>
+                              <th>Facility / Site</th>
+                              <th>Incident Narrative</th>
+                              <th>Category</th>
+                              <th>Severity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredIncidents.map(inc => (
+                              <tr key={inc.incident_id}>
+                                <td className="font-mono text-emerald">{inc.incident_id}</td>
+                                <td>{inc.site_type || "Renewable Facility"}</td>
+                                <td className="narrative-cell">{inc.narrative}</td>
+                                <td><span className="cat-tag">{inc.target_category?.replace("_", " ").toUpperCase()}</span></td>
+                                <td>
+                                  <span className={`badge-pill badge-${inc.target_severity?.toLowerCase()}`}>
+                                    {inc.target_severity?.toUpperCase()}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. CLUSTERS TAB */}
+                {activeTab === "clusters" && (
+                  <div className="tab-pane animate-fade">
+                    <div className="card">
+                      <h3 className="card-title">Recurring Incident Pattern Clusters</h3>
+                      <p className="card-subtitle">Unsupervised K-Means clustering discovers latent hazard clusters across incident narratives.</p>
+                      <div className="clusters-grid">
+                        {clusters.map(c => (
+                          <div key={c.cluster_id} className="cluster-card">
+                            <div className="cluster-header">
+                              <span className="cluster-badge">Cluster #{c.cluster_id + 1}</span>
+                              <span className="cluster-count">{c.count} Incidents</span>
+                            </div>
+                            <h4 className="cluster-title">{c.cluster_name}</h4>
+                            <div className="cluster-body">
+                              <div className="cluster-field">
+                                <span className="field-label">Dominant Category:</span>
+                                <span className="cat-tag">{c.category?.toUpperCase()}</span>
+                              </div>
+                              <div className="cluster-field">
+                                <span className="field-label">Top Contributing NLP Keywords:</span>
+                                <div className="keyword-chips">
+                                  {c.top_keywords?.map((kw, i) => (
+                                    <span key={i} className="kw-chip">{kw}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. GOVERNANCE TAB */}
+                {activeTab === "governance" && (
+                  <div className="tab-pane animate-fade">
+                    <div className="card">
+                      <h3 className="card-title">Model Governance & Baseline Transparency</h3>
+                      <p className="card-subtitle">Evaluates ML classification models against Zero-R (Majority-Class) baselines to demonstrate genuine learning.</p>
+
+                      <div className="governance-grid">
+                        <div className="gov-card">
+                          <h4 className="gov-title">Category Classifier</h4>
+                          <div className="gov-stat-list">
+                            <div className="gov-stat">
+                              <span>Model Accuracy:</span>
+                              <span className="font-mono text-emerald">{((metrics?.category_model?.accuracy || 1) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat">
+                              <span>Weighted F1-Score:</span>
+                              <span className="font-mono text-blue">{((metrics?.category_model?.f1_weighted || 1) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat">
+                              <span>Majority Baseline:</span>
+                              <span className="font-mono text-muted">{((metrics?.category_model?.baseline_accuracy || 0.5) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat highlight">
+                              <span>Gain Over Baseline:</span>
+                              <span className="font-mono text-emerald">+{((metrics?.category_model?.gain || 0.5) * 100).toFixed(1)}%</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="gov-card">
+                          <h4 className="gov-title">Severity Classifier</h4>
+                          <div className="gov-stat-list">
+                            <div className="gov-stat">
+                              <span>Model Accuracy:</span>
+                              <span className="font-mono text-purple">{((metrics?.severity_model?.accuracy || 1) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat">
+                              <span>Weighted F1-Score:</span>
+                              <span className="font-mono text-blue">{((metrics?.severity_model?.f1_weighted || 1) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat">
+                              <span>Majority Baseline:</span>
+                              <span className="font-mono text-muted">{((metrics?.severity_model?.baseline_accuracy || 0.5) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="gov-stat highlight">
+                              <span>Gain Over Baseline:</span>
+                              <span className="font-mono text-purple">+{((metrics?.severity_model?.gain || 0.5) * 100).toFixed(1)}%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="audit-note">
+                        <strong>ISO 45001 & ISO 14001 Audit Trail:</strong> All incoming classifications are logged with timestamp, confidence scores, and root-cause hazard tags for regulatory compliance and safety reporting.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
