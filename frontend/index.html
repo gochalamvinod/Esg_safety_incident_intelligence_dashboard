@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:;"/>
+  <title>Greenko ESG &amp; Safety Incident Intelligence</title>
+  <script>
+    /* Theme initialization: defaults to user saved preference or light mode */
+    (function() {
+      var saved = localStorage.getItem('greenko_theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN TOKENS — ENTERPRISE B2B DESIGN SYSTEM (STRIPE / LINEAR STYLE)
+       ═══════════════════════════════════════════════════════════════ */
+
+    :root, [data-theme="light"] {
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-hover: #f1f5f9;
+      --bg-subtle: #f1f5f9;
+      --bg-input: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --border-focus: #0f172a;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+
+      --brand-primary: #059669;
+      --brand-primary-hover: #047857;
+      --brand-surface: #ecfdf5;
+      --brand-border: #a7f3d0;
+      --brand-text: #065f46;
+
+      --sev-critical-text: #991b1b;
+      --sev-critical-bg: #fef2f2;
+      --sev-critical-border: #fecaca;
+      --sev-critical-bar: #dc2626;
+
+      --sev-high-text: #9a3412;
+      --sev-high-bg: #fff7ed;
+      --sev-high-border: #fed7aa;
+      --sev-high-bar: #ea580c;
+
+      --sev-medium-text: #854d0e;
+      --sev-medium-bg: #fefce8;
+      --sev-medium-border: #fef08a;
+      --sev-medium-bar: #ca8a04;
+
+      --sev-low-text: #166534;
+      --sev-low-bg: #f0fdf4;
+      --sev-low-border: #bbf7d0;
+      --sev-low-bar: #16a34a;
+
+      --cat-safety: #2563eb;
+      --cat-env: #059669;
+      --cat-esg: #7c3aed;
+
+      --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      --chart-track: #e2e8f0;
+      --table-stripe: #f8fafc;
+      --badge-contrast: #0f172a;
+    }
+
+    [data-theme="dark"] {
+      --bg-canvas: #090d16;
+      --bg-surface: #111726;
+      --bg-surface-hover: #192238;
+      --bg-subtle: #161e31;
+      --bg-input: #0b101c;
+      --border-subtle: #1e293b;
+      --border-medium: #334155;
+      --border-focus: #38bdf8;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --brand-primary: #10b981;
+      --brand-primary-hover: #34d399;
+      --brand-surface: rgba(16, 185, 129, 0.12);
+      --brand-border: rgba(16, 185, 129, 0.25);
+      --brand-text: #6ee7b7;
+
+      --sev-critical-text: #fca5a5;
+      --sev-critical-bg: rgba(239, 68, 68, 0.12);
+      --sev-critical-border: rgba(239, 68, 68, 0.25);
+      --sev-critical-bar: #ef4444;
+
+      --sev-high-text: #fdba74;
+      --sev-high-bg: rgba(249, 115, 22, 0.12);
+      --sev-high-border: rgba(249, 115, 22, 0.25);
+      --sev-high-bar: #f97316;
+
+      --sev-medium-text: #fde047;
+      --sev-medium-bg: rgba(234, 179, 8, 0.12);
+      --sev-medium-border: rgba(234, 179, 8, 0.25);
+      --sev-medium-bar: #eab308;
+
+      --sev-low-text: #86efac;
+      --sev-low-bg: rgba(34, 197, 94, 0.12);
+      --sev-low-border: rgba(34, 197, 94, 0.25);
+      --sev-low-bar: #22c55e;
+
+      --cat-safety: #60a5fa;
+      --cat-env: #34d399;
+      --cat-esg: #a78bfa;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+      --chart-track: #1e293b;
+      --table-stripe: #141c2e;
+      --badge-contrast: #f8fafc;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      display: flex;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── SVG Icons helper ── */
+    .icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      vertical-align: middle;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .icon-lg { width: 20px; height: 20px; }
+    .icon-sm { width: 14px; height: 14px; }
+
+    /* ── Skip link for WCAG ── */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background: var(--brand-primary);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      z-index: 1000;
+      text-decoration: none;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SIDEBAR NAVIGATION
+       ═══════════════════════════════════════════════════════════════ */
+    .app-sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      z-index: 30;
+      transition: transform 0.25s ease, background-color 0.2s ease;
+    }
+
+    .brand-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--brand-primary), #047857);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav-container {
+      flex: 1;
+      padding: 14px 10px;
+      overflow-y: auto;
+    }
+
+    .nav-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 8px 10px 4px;
+      margin-top: 8px;
+    }
+    .nav-group-title:first-child { margin-top: 0; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .nav-link:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-main);
+    }
+    .nav-link:focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: -2px;
+    }
+    .nav-link.active {
+      background: var(--brand-surface);
+      color: var(--brand-text);
+      font-weight: 600;
+      border-color: var(--brand-border);
+    }
+    .nav-link .badge-counter {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: var(--radius-full);
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+    .nav-link.active .badge-counter {
+      background: var(--brand-primary);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .sidebar-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .system-health {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .health-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      box-shadow: 0 0 0 2px var(--brand-surface);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       APP SHELL & TOPBAR
+       ═══════════════════════════════════════════════════════════════ */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .top-header {
+      height: 52px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 20;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .mobile-menu-trigger {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-subtle);
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .breadcrumb-current {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--brand-surface);
+      border: 1px solid var(--brand-border);
+      color: var(--brand-text);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .btn-theme {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+    .btn-theme:hover { background: var(--bg-surface-hover); }
+    .btn-theme:focus-visible { outline: 2px solid var(--brand-primary); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CONTENT WRAPPER & VIEWS
+       ═══════════════════════════════════════════════════════════════ */
+    .content-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px;
+    }
+
+    .view-page { display: none; }
+    .view-page.active { display: block; animation: viewFade 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       EXECUTIVE SCORECARDS (KPI STRIP)
+       ═══════════════════════════════════════════════════════════════ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 1080px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+    .scorecard {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease;
+    }
+    .scorecard:hover { border-color: var(--border-medium); }
+
+    .scorecard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .scorecard-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .scorecard-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scorecard-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .scorecard-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BALANCED TWO-COLUMN DASHBOARD SECTIONS
+       ═══════════════════════════════════════════════════════════════ */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 1080px) { .dashboard-layout { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .card-body { padding: 18px; }
+
+    /* ── Severity Distribution Bars (Refined Linear Style) ── */
+    .severity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sev-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .sev-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+    .sev-item-label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sev-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .sev-item-count {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+    .sev-item-count strong {
+      color: var(--text-main);
+      margin-right: 4px;
+    }
+
+    .sev-progress-track {
+      height: 8px;
+      background: var(--chart-track);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .sev-progress-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── Donut Chart Breakdown ── */
+    .donut-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 16px;
+      padding: 8px 0;
+    }
+    .donut-graphic {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+    }
+    .donut-graphic svg {
+      transform: rotate(-90deg);
+    }
+    .donut-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .donut-center-number {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+    }
+    .donut-center-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 2px;
+    }
+
+    .donut-legend-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+    }
+    .legend-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    .legend-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    /* ── Asset Site Distribution (Table / Meter Grid) ── */
+    .site-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .site-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .site-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .site-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+    .site-bar-track {
+      height: 6px;
+      background: var(--chart-track);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .site-bar-fill {
+      height: 100%;
+      background: var(--brand-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.8s ease;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       INTERACTIVE ANALYZER (STUDIO VIEW)
+       ═══════════════════════════════════════════════════════════════ */
+    .studio-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1080px) { .studio-split { grid-template-columns: 1fr; } }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .form-sublabel {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .preset-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .preset-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover {
+      background: var(--brand-surface);
+      border-color: var(--brand-border);
+      color: var(--brand-text);
+    }
+
+    .textarea-custom {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      resize: vertical;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .textarea-custom:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-surface);
+    }
+
+    .select-custom {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .select-custom:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+    }
+
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #ffffff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s ease;
+    }
+    .btn-primary:hover { background: var(--brand-primary-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-medium);
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-secondary:hover { background: var(--bg-surface-hover); }
+
+    /* Dossier & Report Panels */
+    .dossier-box {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .dossier-triage-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .risk-score-gauge {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .risk-score-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .risk-score-max {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .quote-summary {
+      border-left: 3px solid var(--brand-primary);
+      padding: 8px 14px;
+      background: var(--bg-surface);
+      font-style: italic;
+      color: var(--text-muted);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .entity-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .entity-tag-asset {
+      background: var(--brand-surface);
+      color: var(--brand-text);
+      border: 1px solid var(--brand-border);
+    }
+    .entity-tag-hazard {
+      background: var(--sev-high-bg);
+      color: var(--sev-high-text);
+      border: 1px solid var(--sev-high-border);
+    }
+
+    .capa-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .capa-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .capa-index {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--brand-surface);
+      color: var(--brand-text);
+      font-weight: 700;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rag-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 8px;
+    }
+    .rag-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ENTERPRISE DATA TABLE (INCIDENT REGISTER)
+       ═══════════════════════════════════════════════════════════════ */
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      align-items: center;
+    }
+    .search-input-wrap {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 7px 12px 7px 32px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-size: 12px;
+    }
+    .search-input-wrap .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+    table.enterprise-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    table.enterprise-table th {
+      background: var(--bg-surface);
+      color: var(--text-dim);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+    table.enterprise-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+    table.enterprise-table tr:hover td {
+      background: var(--bg-surface-hover);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CLUSTER & GOVERNANCE PANELS
+       ═══════════════════════════════════════════════════════════════ */
+    .cluster-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .cluster-box {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cluster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .cluster-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .matrix-table th, .matrix-table td {
+      padding: 7px 10px;
+      border: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+    .matrix-table th {
+      background: var(--bg-subtle);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .matrix-hit {
+      background: var(--brand-surface);
+      color: var(--brand-text);
+      font-weight: 700;
+    }
+    .matrix-miss {
+      background: var(--sev-critical-bg);
+      color: var(--sev-critical-text);
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        position: fixed;
+        left: -260px;
+      }
+      .app-sidebar.open {
+        left: 0;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      }
+      .mobile-menu-trigger { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ═══════════ ENTERPRISE SIDEBAR ═══════════ -->
+<aside class="app-sidebar" id="sidebar" role="navigation" aria-label="Main Navigation">
+  <div class="brand-header">
+    <div class="brand-logo" aria-hidden="true">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+    </div>
+    <div>
+      <div class="brand-title">Greenko Intelligence</div>
+      <div class="brand-subtitle">ESG &amp; HSE Operations</div>
+    </div>
+  </div>
+
+  <nav class="nav-container">
+    <div class="nav-group-title">Operational Intelligence</div>
+    <div class="nav-link active" role="button" tabindex="0" data-page="overview" aria-current="page">
+      <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="nav-link" role="button" tabindex="0" data-page="studio">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+      <span>Incident Analyzer</span>
+    </div>
+
+    <div class="nav-group-title">Historical Records</div>
+    <div class="nav-link" role="button" tabindex="0" data-page="register">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Incident Register</span>
+      <span class="badge-counter" id="nav-count">--</span>
+    </div>
+    <div class="nav-link" role="button" tabindex="0" data-page="patterns">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <span>Pattern Clusters</span>
+    </div>
+
+    <div class="nav-group-title">Model Governance</div>
+    <div class="nav-link" role="button" tabindex="0" data-page="governance">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Model Validation</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="system-health">
+      <span class="health-dot" aria-hidden="true"></span>
+      <span>Scikit-Learn NLP Engine</span>
+    </div>
+    <div style="color: var(--text-dim); font-size: 10px;">Deterministic • 0 Hallucination</div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN CONTENT AREA ═══════════ -->
+<main class="app-main" id="main-content" role="main">
+
+  <!-- TOPBAR -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="mobile-menu-trigger" id="menu-btn" aria-label="Toggle menu">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+      <div class="breadcrumb">
+        <span>Operational HSE</span>
+        <span>/</span>
+        <span class="breadcrumb-current" id="page-title">Executive Dashboard</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-pill" aria-label="Monitoring Status">
+        <span class="health-dot" aria-hidden="true"></span>
+        <span>72 Renewable Assets Monitored</span>
+      </div>
+
+      <button class="btn-theme" id="theme-btn" type="button" aria-label="Toggle visual theme">
+        <svg class="icon icon-sm" id="theme-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <span id="theme-text">Dark Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="content-scroll">
+
+    <!-- ═══════════ VIEW: OVERVIEW ═══════════ -->
+    <div class="view-page active" id="page-overview">
+
+      <!-- Executive KPI Strip -->
+      <div class="kpi-grid">
+        <div class="scorecard">
+          <div class="scorecard-header">
+            <span class="scorecard-label">Total Documented Incidents</span>
+            <div class="scorecard-icon" style="background: var(--brand-surface); color: var(--brand-primary);">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+          </div>
+          <div class="scorecard-value font-mono" id="kpi-total">--</div>
+          <div class="scorecard-sub">Across 7 renewable energy site types</div>
+        </div>
+
+        <div class="scorecard">
+          <div class="scorecard-header">
+            <span class="scorecard-label">High &amp; Critical Priority</span>
+            <div class="scorecard-icon" style="background: var(--sev-critical-bg); color: var(--sev-critical-bar);">
+              <svg class="icon" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+          </div>
+          <div class="scorecard-value font-mono" style="color: var(--sev-critical-bar);" id="kpi-hc">--</div>
+          <div class="scorecard-sub">
+            <span class="tag-trend" style="background: var(--sev-critical-bg); color: var(--sev-critical-text);">Requires Triage</span>
+            <span>Immediate SWA/CAPA</span>
+          </div>
+        </div>
+
+        <div class="scorecard">
+          <div class="scorecard-header">
+            <span class="scorecard-label">Category Classifier</span>
+            <div class="scorecard-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--cat-safety);">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+          </div>
+          <div class="scorecard-value font-mono" style="color: var(--cat-safety);" id="kpi-cat">--%</div>
+          <div class="scorecard-sub">
+            <span class="tag-trend" style="background: var(--brand-surface); color: var(--brand-text);">+46.7% vs base</span>
+            <span>Holdout Test F1: 0.86</span>
+          </div>
+        </div>
+
+        <div class="scorecard">
+          <div class="scorecard-header">
+            <span class="scorecard-label">Severity Model</span>
+            <div class="scorecard-icon" style="background: rgba(124, 58, 237, 0.1); color: var(--cat-esg);">
+              <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+          </div>
+          <div class="scorecard-value font-mono" style="color: var(--cat-esg);" id="kpi-sev">--%</div>
+          <div class="scorecard-sub">
+            <span class="tag-trend" style="background: var(--brand-surface); color: var(--brand-text);">+46.6% vs base</span>
+            <span>Domain Cue Augmented</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Analytical Two-Column Section -->
+      <div class="dashboard-layout">
+        
+        <!-- Left: Refined Severity Distribution -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>Severity Distribution &amp; Risk Tiers</span>
+              </div>
+              <div class="card-subtitle">Validated multi-tier incident classification breakdown</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="severity-list" id="chart-severity">
+              <!-- Dynamically populated with safe DOM elements -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sleek Category Donut -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>
+                <span>Category Breakdown</span>
+              </div>
+              <div class="card-subtitle">Safety vs Environment vs ESG Compliance</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="donut-container">
+              <div class="donut-graphic">
+                <svg width="140" height="140" viewBox="0 0 140 140" id="donut-svg"></svg>
+                <div class="donut-center-text">
+                  <span class="donut-center-number font-mono" id="donut-center-count">--</span>
+                  <span class="donut-center-label">Incidents</span>
+                </div>
+              </div>
+              <div class="donut-legend-list" id="donut-legend">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Site Operational Distribution Grid -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Renewable Energy Site Distribution</span>
+            </div>
+            <div class="card-subtitle">Operational incident volume across generation and storage assets</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="site-grid" id="chart-sites">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ VIEW: STUDIO / ANALYZER ═══════════ -->
+    <div class="view-page" id="page-studio">
+      <div class="studio-split">
+        
+        <!-- Left: Incident Narrative Input Form -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Incident Triage &amp; NLP Analysis</span>
+              </div>
+              <div class="card-subtitle">Submit raw narrative text for real-time ML inference &amp; CAPA generation</div>
+            </div>
+          </div>
+          <div class="card-body">
+            
+            <div class="form-group">
+              <label class="form-label" id="preset-label">Standard Renewable Presets <span class="form-sublabel">(Click to test)</span></label>
+              <div class="preset-chip-list" role="group" aria-labelledby="preset-label">
+                <button class="preset-chip" type="button" data-preset="0">Solar Inverter Walkway Slip</button>
+                <button class="preset-chip" type="button" data-preset="1">Wind Gearbox Oil Seepage</button>
+                <button class="preset-chip" type="button" data-preset="2">33kV Switchgear LOTO Bypass</button>
+                <button class="preset-chip" type="button" data-preset="3">Excavator Buried Cable Strike</button>
+                <button class="preset-chip" type="button" data-preset="4">Contractor Waste Segregation Deviation</button>
+                <button class="preset-chip" type="button" data-preset="5">Substation Transformer Rupture &amp; Bund Overtopping</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-narrative">Incident Narrative Description</label>
+              <textarea id="inp-narrative" class="textarea-custom" placeholder="Paste or describe the operational safety, environmental discharge, or compliance deviation in detail..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-site">Asset Facility Type</label>
+              <select id="inp-site" class="select-custom">
+                <option value="Solar PV">Solar PV Power Generation Plant</option>
+                <option value="Wind Farm">Wind Turbine Generator (WTG) Farm</option>
+                <option value="Hydro Power">Hydro / Pumped Storage Powerhouse</option>
+                <option value="Substation">High Voltage Transmission Substation</option>
+                <option value="BESS">Battery Energy Storage System (BESS)</option>
+                <option value="Transmission">Overhead Transmission Grid Corridor</option>
+              </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+              <button class="btn-primary" id="btn-analyze" type="button">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-label">Run ML Inference</span>
+              </button>
+              <button class="btn-secondary" id="btn-log" type="button">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>Log to Incident Register</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Intelligence Dossier Output -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Automated Intelligence Report</span>
+              </div>
+              <div class="card-subtitle">Zero-hallucination inference, risk scoring, and ISO grounded CAPA</div>
+            </div>
+          </div>
+          <div class="card-body">
+            
+            <div id="result-empty" style="text-align:center; padding:50px 20px; color:var(--text-dim);">
+              <svg class="icon" style="width:40px; height:40px; stroke-width:1.5; margin-bottom:12px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <div style="font-weight:600; color:var(--text-main); font-size:14px;">Awaiting Incident Data</div>
+              <p style="font-size:12px; margin-top:4px;">Select a preset or enter a narrative on the left to generate the complete intelligence dossier.</p>
+            </div>
+
+            <div id="result-live" style="display:none;" aria-live="polite">
+              
+              <!-- Triage strip -->
+              <div class="dossier-triage-row">
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <span id="r-cat-pill" class="badge-pill">--</span>
+                  <span id="r-sev-pill" class="badge-pill">--</span>
+                </div>
+                <div class="risk-score-gauge">
+                  <span style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">Risk Index:</span>
+                  <span class="risk-score-value font-mono" id="r-risk">--</span>
+                  <span class="risk-score-max">/100</span>
+                </div>
+              </div>
+
+              <!-- Extractive Summary -->
+              <div style="margin-bottom:16px;">
+                <div style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Grounded Extractive Summary</div>
+                <div class="quote-summary" id="r-summary">--</div>
+              </div>
+
+              <!-- Entities & Hazards -->
+              <div style="margin-bottom:16px;">
+                <div style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Identified Assets &amp; Operational Hazards</div>
+                <div class="tag-cloud" id="r-tags"></div>
+              </div>
+
+              <!-- CAPA Checklist -->
+              <div style="margin-bottom:16px;">
+                <div style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Actionable Corrective &amp; Preventive Protocols (ISO 45001 / ISO 14001)</div>
+                <ul class="capa-checklist" id="r-capa"></ul>
+              </div>
+
+              <!-- RAG Historical Precedents -->
+              <div>
+                <div style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Top-3 Historical Evidence Precedents (Cosine Similarity Search)</div>
+                <div id="r-rag"></div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════ VIEW: REGISTER ═══════════ -->
+    <div class="view-page" id="page-register">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Operational Incident Register &amp; Audit Trail</span>
+            </div>
+            <div class="card-subtitle">Audited log of classified safety, environmental, and governance events</div>
+          </div>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="search-input-wrap">
+            <svg class="icon search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+            <input type="text" id="f-search" placeholder="Search narrative, equipment, or root cause..."/>
+          </div>
+          <select id="f-cat" class="select-custom" style="width:160px; padding:7px 10px;">
+            <option value="">All Categories</option>
+            <option value="safety">Safety Incidents</option>
+            <option value="environment">Environmental Deviations</option>
+            <option value="esg_compliance">ESG Compliance</option>
+          </select>
+          <select id="f-sev" class="select-custom" style="width:140px; padding:7px 10px;">
+            <option value="">All Severities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="enterprise-table">
+            <thead>
+              <tr>
+                <th style="width:70px">ID</th>
+                <th style="width:130px">Site Type</th>
+                <th>Incident Narrative</th>
+                <th style="width:120px">Category</th>
+                <th style="width:100px">Severity</th>
+              </tr>
+            </thead>
+            <tbody id="inc-tbody">
+              <tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-dim);">Loading incident repository...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ VIEW: PATTERNS ═══════════ -->
+    <div class="view-page" id="page-patterns">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <span>Recurring Operational Pattern Clusters</span>
+            </div>
+            <div class="card-subtitle">Unsupervised K-Means vector clustering over TF-IDF incident text embeddings</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="cluster-card-grid" id="cluster-box">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ VIEW: GOVERNANCE ═══════════ -->
+    <div class="view-page" id="page-governance">
+      <div class="studio-split">
+        
+        <!-- Category Model Card -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title" style="color: var(--cat-safety);">Category Classification Model</div>
+              <div class="card-subtitle">TF-IDF (1,2 n-grams) + Regularized Balanced Logistic Regression</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Holdout Test Accuracy</span>
+                <strong class="font-mono" style="color:var(--brand-primary);" id="g-cat-acc">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Majority Class Baseline</span>
+                <strong class="font-mono" id="g-cat-base">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Net Accuracy Gain</span>
+                <strong class="font-mono" style="color:var(--brand-primary);" id="g-cat-gain">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Precision / Recall / F1 (Weighted)</span>
+                <strong class="font-mono" id="g-cat-f1">--</strong>
+              </div>
+            </div>
+            <div style="margin-top:14px; font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Confusion Matrix</div>
+            <div id="g-cat-cm"></div>
+          </div>
+        </div>
+
+        <!-- Severity Model Card -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title" style="color: var(--cat-esg);">Severity Classification Model</div>
+              <div class="card-subtitle">Domain Hazard Cue Lexicon Augmented TF-IDF + Logistic Regression</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Holdout Test Accuracy</span>
+                <strong class="font-mono" style="color:var(--cat-esg);" id="g-sev-acc">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Majority Class Baseline</span>
+                <strong class="font-mono" id="g-sev-base">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Net Accuracy Gain</span>
+                <strong class="font-mono" style="color:var(--brand-primary);" id="g-sev-gain">--</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                <span style="color:var(--text-muted)">Precision / Recall / F1 (Weighted)</span>
+                <strong class="font-mono" id="g-sev-f1">--</strong>
+              </div>
+            </div>
+            <div style="margin-top:14px; font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Confusion Matrix</div>
+            <div id="g-sev-cm"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Limitations & Compliance Statement -->
+      <div class="card" style="margin-top:20px;">
+        <div class="card-head">
+          <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Production Audit Notes &amp; Engineering Constraints</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex; flex-direction:column; gap:10px; font-size:12px; color:var(--text-muted); line-height:1.7;">
+            <div>• <strong>Zero Hallucination Guarantee:</strong> All summaries and preventive recommendations are extracted deterministically from verified text clauses and grounded ISO 45001 / ISO 14001 compliance matrices — completely avoiding generative LLM fabrications.</div>
+            <div>• <strong>Offline Privacy &amp; Data Sovereignty:</strong> Evaluated and trained locally without transmitting sensitive proprietary energy infrastructure narratives to external third-party APIs.</div>
+            <div>• <strong>SCADA Fusion Roadmap:</strong> Phase 2 architecture will ingest real-time OPC-UA / MODBUS telemetry to correlate physical vibration and thermal sensor anomalies with textual human reports.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DOM & XSS-SAFE RENDERING UTILITIES
+   Strictly avoids innerHTML with user or external data sinks.
+   ═══════════════════════════════════════════════════════════════ */
+
+function el(tag, attrs, children) {
+  var element = document.createElement(tag);
+  if (attrs) {
+    Object.entries(attrs).forEach(function(pair) {
+      var k = pair[0], v = pair[1];
+      if (k === 'text') element.textContent = v;
+      else if (k === 'style') Object.assign(element.style, v);
+      else if (k === 'class') element.className = v;
+      else element.setAttribute(k, v);
+    });
+  }
+  if (children) {
+    (Array.isArray(children) ? children : [children]).forEach(function(child) {
+      if (child == null) return;
+      if (typeof child === 'string') element.appendChild(document.createTextNode(child));
+      else element.appendChild(child);
+    });
+  }
+  return element;
+}
+
+function clearNode(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+/* ── Static Presets ── */
+var PRESETS = [
+  { t: "Contractor slipped near wet walkway at solar inverter block, minor ankle sprain, housekeeping issue", s: "Solar PV" },
+  { t: "Oil seepage observed near wind turbine gearbox maintenance bay, contained using absorption spill kit", s: "Wind Farm" },
+  { t: "Electrician attempted to open 33kV live switchgear panel without verifying zero voltage or applying physical LOTO lock", s: "Substation" },
+  { t: "Heavy excavator teeth severed buried 33kV high-voltage collector feeder cable during unauthorized trenching activity", s: "Solar PV" },
+  { t: "Repeated waste segregation deviation at contractor storage area, plastic mixed with general trash", s: "Wind Farm" },
+  { t: "Major transformer rupture released 3,500 liters of mineral dielectric oil overtopping bund wall and entering irrigation canal", s: "Substation" }
+];
+
+/* ── Theme Handling ── */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('greenko_theme', theme); } catch (e) {}
+  
+  var isDark = theme === 'dark';
+  var textEl = document.getElementById('theme-text');
+  var iconEl = document.getElementById('theme-icon-svg');
+  if (textEl) textEl.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  
+  // Re-draw SVG donut if overview is currently open so stroke colors match theme
+  var overview = document.getElementById('page-overview');
+  if (overview && overview.classList.contains('active')) {
+    fetchOverview();
+  }
+}
+
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme') || 'light';
+  var next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+}
+
+/* ── Navigation ── */
+var PAGE_TITLES = {
+  overview: 'Executive Dashboard',
+  studio: 'Incident Analyzer & Triage',
+  register: 'Historical Incident Register',
+  patterns: 'Pattern Clusters',
+  governance: 'Model Validation & Governance'
+};
+
+function navigate(pageId) {
+  document.querySelectorAll('.nav-link').forEach(function(link) {
+    var isTarget = link.getAttribute('data-page') === pageId;
+    link.classList.toggle('active', isTarget);
+    if (isTarget) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+
+  document.querySelectorAll('.view-page').forEach(function(view) {
+    view.classList.toggle('active', view.id === 'page-' + pageId);
+  });
+
+  document.getElementById('page-title').textContent = PAGE_TITLES[pageId] || 'Dashboard';
+  
+  // Mobile sidebar auto-close
+  document.getElementById('sidebar').classList.remove('open');
+
+  if (pageId === 'overview') fetchOverview();
+  if (pageId === 'register') loadIncidents();
+  if (pageId === 'patterns') loadClusters();
+  if (pageId === 'governance') loadMetrics();
+}
+
+/* ── Event Listeners Setup ── */
+document.querySelectorAll('.nav-link[data-page]').forEach(function(item) {
+  item.addEventListener('click', function() { navigate(item.getAttribute('data-page')); });
+  item.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigate(item.getAttribute('data-page'));
+    }
+  });
+});
+
+document.querySelectorAll('.preset-chip[data-preset]').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    var i = parseInt(chip.getAttribute('data-preset'), 10);
+    document.getElementById('inp-narrative').value = PRESETS[i].t;
+    document.getElementById('inp-site').value = PRESETS[i].s;
+    analyzeIncident();
+  });
+});
+
+document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+document.getElementById('btn-analyze').addEventListener('click', analyzeIncident);
+document.getElementById('btn-log').addEventListener('click', logToRegister);
+
+document.getElementById('f-search').addEventListener('input', loadIncidents);
+document.getElementById('f-cat').addEventListener('change', loadIncidents);
+document.getElementById('f-sev').addEventListener('change', loadIncidents);
+
+document.getElementById('menu-btn').addEventListener('click', function() {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   ANALYTICS & DATA FETCHING
+   ═══════════════════════════════════════════════════════════════ */
+
+async function fetchOverview() {
+  try {
+    var res = await fetch('/api/analytics');
+    var data = await res.json();
+
+    var total = data.total_incidents || 0;
+    var hc = data.high_critical_count || 0;
+    var catAcc = (data.model_health.category_accuracy * 100);
+    var sevAcc = (data.model_health.severity_accuracy * 100);
+
+    document.getElementById('kpi-total').textContent = total;
+    document.getElementById('kpi-hc').textContent = hc;
+    document.getElementById('kpi-cat').textContent = catAcc.toFixed(1) + '%';
+    document.getElementById('kpi-sev').textContent = sevAcc.toFixed(1) + '%';
+    document.getElementById('nav-count').textContent = total;
+    document.getElementById('donut-center-count').textContent = total;
+
+    // Severity Breakdown Rendering
+    var sevs = data.severities || {};
+    var sevMeta = {
+      critical: { label: 'Critical Severity', color: 'var(--sev-critical-bar)', bg: 'var(--sev-critical-bg)', text: 'var(--sev-critical-text)' },
+      high:     { label: 'High Severity',     color: 'var(--sev-high-bar)',     bg: 'var(--sev-high-bg)',     text: 'var(--sev-high-text)' },
+      medium:   { label: 'Medium Severity',   color: 'var(--sev-medium-bar)',   bg: 'var(--sev-medium-bg)',   text: 'var(--sev-medium-text)' },
+      low:      { label: 'Low Severity',      color: 'var(--sev-low-bar)',      bg: 'var(--sev-low-bg)',      text: 'var(--sev-low-text)' }
+    };
+    var sevOrder = ['critical', 'high', 'medium', 'low'];
+    var chartSev = document.getElementById('chart-severity');
+    clearNode(chartSev);
+
+    sevOrder.forEach(function(sevKey) {
+      var count = sevs[sevKey] || 0;
+      var pct = total > 0 ? Math.round((count / total) * 100) : 0;
+      var cfg = sevMeta[sevKey];
+
+      var item = el('div', { class: 'sev-item' }, [
+        el('div', { class: 'sev-item-meta' }, [
+          el('span', { class: 'sev-item-label' }, [
+            el('span', { class: 'sev-dot', style: { background: cfg.color } }),
+            document.createTextNode(cfg.label)
+          ]),
+          el('span', { class: 'sev-item-count font-mono' }, [
+            el('strong', { text: String(count) }),
+            document.createTextNode('(' + pct + '%)')
+          ])
+        ]),
+        el('div', { class: 'sev-progress-track' }, [
+          el('div', { class: 'sev-progress-fill', style: { width: pct + '%', background: cfg.color } })
+        ])
+      ]);
+      chartSev.appendChild(item);
+    });
+
+    // Category Donut Rendering
+    var cats = data.categories || {};
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var catColors = isDark
+      ? { safety: '#60a5fa', environment: '#34d399', esg_compliance: '#a78bfa' }
+      : { safety: '#2563eb', environment: '#059669', esg_compliance: '#7c3aed' };
+    var catLabels = { safety: 'Occupational Safety', environment: 'Environmental Management', esg_compliance: 'ESG Compliance' };
+    var catTotal = Object.values(cats).reduce(function(a, b) { return a + b; }, 0) || 1;
+
+    var svg = document.getElementById('donut-svg');
+    var legend = document.getElementById('donut-legend');
+    clearNode(svg);
+    clearNode(legend);
+
+    var cx = 70, cy = 70, r = 52, stroke = 12;
+    var circumference = 2 * Math.PI * r;
+    var accumulatedOffset = 0;
+
+    Object.entries(cats).forEach(function(pair) {
+      var catKey = pair[0], val = pair[1];
+      var fraction = val / catTotal;
+      var dash = fraction * circumference;
+      var gap = circumference - dash;
+
+      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', r);
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', catColors[catKey] || '#666');
+      circle.setAttribute('stroke-width', stroke);
+      circle.setAttribute('stroke-dasharray', dash + ' ' + gap);
+      circle.setAttribute('stroke-dashoffset', -accumulatedOffset);
+      svg.appendChild(circle);
+      accumulatedOffset += dash;
+
+      var legRow = el('div', { class: 'legend-row' }, [
+        el('div', { class: 'legend-badge' }, [
+          el('span', { class: 'legend-color-dot', style: { background: catColors[catKey] } }),
+          el('span', { text: catLabels[catKey] || catKey })
+        ]),
+        el('span', { class: 'font-mono', style: { fontWeight: '700', color: 'var(--text-main)' }, text: val + ' (' + Math.round(fraction * 100) + '%)' })
+      ]);
+      legend.appendChild(legRow);
+    });
+
+    // Site Grid Rendering
+    var sites = data.sites || {};
+    var siteBox = document.getElementById('chart-sites');
+    clearNode(siteBox);
+    var maxSiteVal = Math.max.apply(null, Object.values(sites).concat([1]));
+
+    Object.entries(sites).sort(function(a, b) { return b[1] - a[1]; }).forEach(function(pair) {
+      var name = pair[0], sCount = pair[1];
+      var sPct = Math.round((sCount / maxSiteVal) * 100);
+
+      var sCard = el('div', { class: 'site-card' }, [
+        el('div', { class: 'site-card-top' }, [
+          el('span', { class: 'site-name' }, [
+            el('span', { text: name })
+          ]),
+          el('span', { class: 'site-badge font-mono', text: sCount + ' events' })
+        ]),
+        el('div', { class: 'site-bar-track' }, [
+          el('div', { class: 'site-bar-fill', style: { width: sPct + '%' } })
+        ])
+      ]);
+      siteBox.appendChild(sCard);
+    });
+
+  } catch (err) {
+    console.error('Failed to load overview data:', err);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INCIDENT ANALYZER INFERENCE
+   ═══════════════════════════════════════════════════════════════ */
+
+async function analyzeIncident() {
+  var narrative = document.getElementById('inp-narrative').value.trim();
+  if (!narrative) {
+    alert('Please enter or select an incident narrative.');
+    return;
+  }
+
+  var btn = document.getElementById('btn-analyze');
+  var lbl = document.getElementById('btn-label');
+  lbl.textContent = 'Processing...';
+  btn.disabled = true;
+
+  try {
+    var res = await fetch('/api/classify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        narrative: narrative,
+        site_type: document.getElementById('inp-site').value
+      })
+    });
+    var data = await res.json();
+    renderAnalysisOutput(data);
+  } catch (err) {
+    alert('Inference error: ' + err.message);
+  } finally {
+    lbl.textContent = 'Run ML Inference';
+    btn.disabled = false;
+  }
+}
+
+function renderAnalysisOutput(d) {
+  document.getElementById('result-empty').style.display = 'none';
+  var live = document.getElementById('result-live');
+  live.style.display = 'block';
+
+  var pred = d.prediction;
+
+  // Category badge
+  var catPill = document.getElementById('r-cat-pill');
+  catPill.textContent = pred.category.toUpperCase() + ' (' + (pred.category_confidence * 100).toFixed(0) + '%)';
+  catPill.style.background = pred.category === 'safety' ? 'var(--brand-surface)' : pred.category === 'environment' ? 'var(--sev-low-bg)' : 'rgba(124, 58, 237, 0.12)';
+  catPill.style.color = pred.category === 'safety' ? 'var(--cat-safety)' : pred.category === 'environment' ? 'var(--cat-env)' : 'var(--cat-esg)';
+
+  // Severity badge
+  var sevPill = document.getElementById('r-sev-pill');
+  sevPill.textContent = pred.severity.toUpperCase() + ' SEVERITY';
+  sevPill.style.background = 'var(--sev-' + pred.severity + '-bg)';
+  sevPill.style.color = 'var(--sev-' + pred.severity + '-text)';
+  sevPill.style.border = '1px solid var(--sev-' + pred.severity + '-border)';
+
+  // Risk Score
+  var rRisk = document.getElementById('r-risk');
+  rRisk.textContent = pred.composite_risk_score;
+  rRisk.style.color = pred.composite_risk_score >= 80 ? 'var(--sev-critical-bar)' : pred.composite_risk_score >= 50 ? 'var(--sev-high-bar)' : 'var(--brand-primary)';
+
+  // Summary
+  document.getElementById('r-summary').textContent = d.nlp_insights.extractive_summary;
+
+  // Entity Tags
+  var tagBox = document.getElementById('r-tags');
+  clearNode(tagBox);
+  d.nlp_insights.detected_assets.forEach(function(a) {
+    tagBox.appendChild(el('span', { class: 'entity-tag entity-tag-asset', text: 'Asset: ' + a }));
+  });
+  d.nlp_insights.detected_hazards.forEach(function(h) {
+    tagBox.appendChild(el('span', { class: 'entity-tag entity-tag-hazard', text: 'Hazard: ' + h }));
+  });
+
+  // CAPA Checklist
+  var capaBox = document.getElementById('r-capa');
+  clearNode(capaBox);
+  d.recommended_preventive_actions.forEach(function(act, idx) {
+    capaBox.appendChild(el('li', { class: 'capa-row' }, [
+      el('span', { class: 'capa-index font-mono', text: String(idx + 1) }),
+      el('span', { text: act })
+    ]));
+  });
+
+  // RAG Evidence Precedents
+  var ragBox = document.getElementById('r-rag');
+  clearNode(ragBox);
+  d.retrieval_evidence.forEach(function(ev) {
+    ragBox.appendChild(el('div', { class: 'rag-item' }, [
+      el('div', { class: 'rag-item-head' }, [
+        el('strong', { class: 'font-mono', style: { color: 'var(--text-main)', fontSize: '11px' }, text: ev.incident_id + ' • ' + ev.site_type }),
+        el('span', { class: 'badge-pill font-mono', style: { background: 'var(--brand-surface)', color: 'var(--brand-text)' }, text: Math.round(ev.similarity_score * 100) + '% match' })
+      ]),
+      el('div', { style: { fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontStyle: 'italic' }, text: '"' + ev.narrative + '"' }),
+      el('div', { style: { fontSize: '11px', color: 'var(--text-dim)' }, text: 'Historical Resolution: ' + ev.historical_actions })
+    ]));
+  });
+
+  // Gemini 3.1 Flash Lite Synthesis
+  var oldG = document.getElementById('r-gemini-box');
+  if (oldG) oldG.remove();
+  if (d.gemini_insights && d.gemini_insights.status === 'success') {
+    var g = d.gemini_insights;
+    var gBox = el('div', { id: 'r-gemini-box', class: 'dossier-box', style: { border: '1px solid var(--brand-border)', background: 'var(--brand-surface)', marginTop: '14px', marginBottom: '14px' } }, [
+      el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' } }, [
+        el('span', { style: { fontSize: '11px', fontWeight: '700', color: 'var(--brand-text)', textTransform: 'uppercase', letterSpacing: '0.5px' }, text: '⚡ Gemini 3.1 Flash Lite Synthesis' }),
+        el('span', { class: 'badge-pill font-mono', style: { background: 'var(--brand-primary)', color: '#fff', fontSize: '10px' }, text: g.model_used || 'gemini-3.1-flash-lite' })
+      ]),
+      el('div', { style: { fontSize: '12px', color: 'var(--text-main)', marginBottom: '8px', lineHeight: '1.5' }, text: g.ai_executive_summary }),
+      el('div', { style: { fontSize: '11px', fontWeight: '700', color: 'var(--brand-text)', textTransform: 'uppercase', marginBottom: '2px' }, text: 'Root Cause Analysis:' }),
+      el('div', { style: { fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', lineHeight: '1.4' }, text: typeof g.root_cause_analysis === 'object' && g.root_cause_analysis !== null ? Object.entries(g.root_cause_analysis).map(function(e) { return e[0].replace('_', ' ').toUpperCase() + ': ' + e[1]; }).join(' | ') : String(g.root_cause_analysis || '') }),
+      el('div', { style: { fontSize: '11px', fontWeight: '700', color: 'var(--brand-text)', textTransform: 'uppercase', marginBottom: '2px' }, text: 'ESG Disclosure Impact:' }),
+      el('div', { style: { fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }, text: g.esg_disclosure_impact })
+    ]);
+    ragBox.parentNode.insertBefore(gBox, ragBox);
+  }
+}
+
+async function logToRegister() {
+  var narrative = document.getElementById('inp-narrative').value.trim();
+  if (!narrative) {
+    alert('Please enter a narrative to log.');
+    return;
+  }
+  try {
+    var res = await fetch('/api/incidents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        narrative: narrative,
+        site_type: document.getElementById('inp-site').value
+      })
+    });
+    var d = await res.json();
+    alert('Incident ' + d.incident_id + ' successfully logged as ' + d.analysis.prediction.category.toUpperCase() + ' / ' + d.analysis.prediction.severity.toUpperCase());
+    fetchOverview();
+  } catch (e) {
+    alert('Error logging incident: ' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INCIDENT REGISTER TABLE
+   ═══════════════════════════════════════════════════════════════ */
+
+async function loadIncidents() {
+  var url = '/api/incidents?limit=100';
+  var s = document.getElementById('f-search').value;
+  var c = document.getElementById('f-cat').value;
+  var v = document.getElementById('f-sev').value;
+  if (s) url += '&search=' + encodeURIComponent(s);
+  if (c) url += '&category=' + c;
+  if (v) url += '&severity=' + v;
+
+  try {
+    var res = await fetch(url);
+    var d = await res.json();
+    var tbody = document.getElementById('inc-tbody');
+    clearNode(tbody);
+
+    if (!d.incidents.length) {
+      tbody.appendChild(el('tr', null, [
+        el('td', { colspan: '5', style: { textAlign: 'center', padding: '30px', color: 'var(--text-dim)' }, text: 'No matching incidents found.' })
+      ]));
+      return;
+    }
+
+    d.incidents.forEach(function(inc) {
+      var catColor = inc.target_category === 'safety' ? 'var(--cat-safety)' : inc.target_category === 'environment' ? 'var(--cat-env)' : 'var(--cat-esg)';
+      var sevBg = 'var(--sev-' + inc.target_severity + '-bg)';
+      var sevText = 'var(--sev-' + inc.target_severity + '-text)';
+
+      var row = el('tr', null, [
+        el('td', { class: 'font-mono', style: { fontWeight: '700', color: 'var(--text-main)' }, text: inc.incident_id }),
+        el('td', { text: inc.site_type || 'Renewable Asset' }),
+        el('td', { style: { maxWidth: '420px', lineHeight: '1.4' }, text: inc.narrative }),
+        el('td', null, [
+          el('span', { class: 'badge-pill font-mono', style: { background: 'var(--bg-subtle)', color: catColor }, text: inc.target_category })
+        ]),
+        el('td', null, [
+          el('span', { class: 'badge-pill font-mono', style: { background: sevBg, color: sevText }, text: inc.target_severity })
+        ])
+      ]);
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error('Failed to load incidents:', err);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PATTERN CLUSTERS & GOVERNANCE METRICS
+   ═══════════════════════════════════════════════════════════════ */
+
+async function loadClusters() {
+  try {
+    var res = await fetch('/api/clusters');
+    var d = await res.json();
+    var box = document.getElementById('cluster-box');
+    clearNode(box);
+
+    d.clusters.forEach(function(cluster) {
+      var kwChips = el('div', { class: 'tag-cloud' });
+      cluster.top_keywords.forEach(function(kw) {
+        kwChips.appendChild(el('span', { class: 'entity-tag', style: { background: 'var(--bg-subtle)', color: 'var(--text-muted)' }, text: kw }));
+      });
+
+      var card = el('div', { class: 'cluster-box' }, [
+        el('div', { class: 'cluster-header' }, [
+          el('span', { class: 'cluster-name', text: cluster.cluster_name }),
+          el('span', { class: 'badge-pill font-mono', style: { background: 'var(--brand-surface)', color: 'var(--brand-text)' }, text: cluster.incident_count + ' events' })
+        ]),
+        el('div', { style: { fontSize: '11px', color: 'var(--text-dim)' }, text: 'Dominant Category: ' + cluster.dominant_category + ' • Severity: ' + cluster.dominant_severity.toUpperCase() }),
+        kwChips,
+        el('div', { style: { fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', background: 'var(--bg-subtle)', padding: '8px 10px', borderRadius: 'var(--radius-sm)' }, text: '"' + cluster.sample_incident + '"' })
+      ]);
+      box.appendChild(card);
+    });
+  } catch (err) {
+    console.error('Failed to load clusters:', err);
+  }
+}
+
+async function loadMetrics() {
+  try {
+    var res = await fetch('/api/metrics');
+    var d = await res.json();
+    var c = d.category_model, s = d.severity_model;
+
+    document.getElementById('g-cat-acc').textContent = (c.accuracy * 100).toFixed(1) + '%';
+    document.getElementById('g-cat-base').textContent = (c.baseline_majority_accuracy * 100).toFixed(1) + '%';
+    document.getElementById('g-cat-gain').textContent = '+' + (c.accuracy_gain_over_baseline * 100).toFixed(1) + '%';
+    document.getElementById('g-cat-f1').textContent = (c.precision_weighted * 100).toFixed(1) + ' / ' + (c.recall_weighted * 100).toFixed(1) + ' / ' + (c.f1_weighted * 100).toFixed(1);
+
+    document.getElementById('g-sev-acc').textContent = (s.accuracy * 100).toFixed(1) + '%';
+    document.getElementById('g-sev-base').textContent = (s.baseline_majority_accuracy * 100).toFixed(1) + '%';
+    document.getElementById('g-sev-gain').textContent = '+' + (s.accuracy_gain_over_baseline * 100).toFixed(1) + '%';
+    document.getElementById('g-sev-f1').textContent = (s.precision_weighted * 100).toFixed(1) + ' / ' + (s.recall_weighted * 100).toFixed(1) + ' / ' + (s.f1_weighted * 100).toFixed(1);
+
+    renderConfusionMatrix('g-cat-cm', c.labels, c.confusion_matrix);
+    renderConfusionMatrix('g-sev-cm', s.labels, s.confusion_matrix);
+  } catch (err) {
+    console.error('Failed to load model metrics:', err);
+  }
+}
+
+function renderConfusionMatrix(targetId, labels, matrix) {
+  var container = document.getElementById(targetId);
+  clearNode(container);
+
+  var tbl = el('table', { class: 'matrix-table font-mono' });
+  var thead = el('thead');
+  var headerRow = el('tr');
+  headerRow.appendChild(el('th', { text: 'Actual \\ Pred' }));
+  labels.forEach(function(l) { headerRow.appendChild(el('th', { text: l })); });
+  thead.appendChild(headerRow);
+  tbl.appendChild(thead);
+
+  var tbody = el('tbody');
+  for (var i = 0; i < labels.length; i++) {
+    var tr = el('tr');
+    tr.appendChild(el('th', { text: labels[i] }));
+    for (var j = 0; j < labels.length; j++) {
+      var countVal = (matrix[i] && matrix[i][j]) || 0;
+      var hitClass = (i === j && countVal > 0) ? 'matrix-hit' : (countVal > 0 ? 'matrix-miss' : '');
+      tr.appendChild(el('td', { class: hitClass, text: String(countVal) }));
+    }
+    tbody.appendChild(tr);
+  }
+  tbl.appendChild(tbody);
+  container.appendChild(tbl);
+}
+
+// Initial bootstrap
+window.addEventListener('DOMContentLoaded', function() {
+  var savedTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(savedTheme);
+  fetchOverview();
+});
+</script>
+
+</body>
+</html>
