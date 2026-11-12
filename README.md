@@ -132,7 +132,9 @@ The platform runs directly on the bundled benchmark dataset (`data/safety_esg_in
 * **frontend/index.html:** Single-page enterprise dashboard (Dark/Light mode, SVG icons, Gemini dossier).
 * **.env:** Environment credentials (`GEMINI_API_KEY`, `GEMINI_MODEL`).
 * **.gitignore:** Security rule preventing credential leaks.
-* **Procfile:** Process declaration for Railway cloud deployment.
+* **vercel.json:** Routing declaration for Vercel cloud deployment.
+* **api/index.py:** Serverless entrypoint for Vercel.
+* **Procfile:** Process declaration for cloud deployment.
 * **requirements.txt:** Exact list of the 7 approved Python packages.
 * **README.md:** Complete technical documentation and execution guide.
 
@@ -212,21 +214,18 @@ python -m uvicorn backend.app:app --host 127.0.0.1 --port 8000 --reload
 
 ---
 
-## 10. Railway Cloud Deployment Guide
+## 10. Vercel Cloud Deployment Guide
 
-The application is pre-configured for one-click deployment on **Railway**:
+The application is pre-configured for one-click deployment on **Vercel**:
 
-1. **Procfile:** Located in the project root:
-   ```
-   web: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
-   ```
-2. **Deployment Steps:**
-   * Log in to [Railway.app](https://railway.app/) and select **New Project** &rarr; **Deploy from GitHub repo**.
-   * Select your repository: `Esg_safety_incident_intelligence_dashboard`.
-   * Under the **Variables** tab in Railway, define:
+1. **Step-by-Step Vercel Deployment:**
+   * Log in to [Vercel.com](https://vercel.com/) and click **Add New...** &rarr; **Project**.
+   * Select **Import Git Repository** and choose `Esg_safety_incident_intelligence_dashboard`.
+   * Under the **Environment Variables** section, add:
      * `GEMINI_API_KEY`: Your Gemini API key
      * `GEMINI_MODEL`: `gemini-3.1-flash-lite`
-   * Railway automatically installs `requirements.txt`, executes `Procfile`, and provisions an HTTPS URL.
+   * Click **Deploy**.
+   * Vercel builds the project and provisions an instant global HTTPS URL (e.g., `https://esg-safety-incident-intelligence-dashboard.vercel.app`).
 
 ---
 
