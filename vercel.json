@@ -3,27 +3,11 @@
   "services": {
     "app": {
       "root": ".",
-      "framework": "fastapi",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "frontend",
-          "format": "url",
-          "env": "FRONTEND_URL"
-        }
-      ]
+      "framework": "fastapi"
     },
     "frontend": {
       "root": "frontend",
-      "framework": "vite",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "app",
-          "format": "url",
-          "env": "APP_URL"
-        }
-      ]
+      "framework": "vite"
     }
   },
   "rewrites": [
