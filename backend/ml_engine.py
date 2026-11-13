@@ -146,7 +146,7 @@ class IncidentMLPipeline:
     def generate_gemini_insights(self, narrative: str, site_type: str = "Solar PV", cat: str = "safety", sev: str = "medium", hazards: Optional[List[str]] = None) -> Dict[str, Any]:
         """Fast Gemini API invocation using standard library urllib, with instant domain synthesis fallback."""
         key = os.environ.get("GEMINI_API_KEY", "")
-        model = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite")
+        model = os.environ.get("GEMINI_MODEL", "gemini-flash-lite-latest")
         if key:
             prompt = (
                 f"You are Chief HSE Officer at Greenko Group. Analyze this incident at a {site_type} facility:\n"
@@ -154,12 +154,15 @@ class IncidentMLPipeline:
                 "Return JSON with: ai_executive_summary (2 sentences), root_cause_analysis (technical and organizational cause), "
                 "immediate_corrective_actions (list of 3 items), esg_disclosure_impact (e.g. BRSR/GRI 403 reporting impact)."
             )
-            body = json.dumps({"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}}).encode()
-            for candidate in [model, "gemini-3-flash-preview", "gemini-flash-latest"]:
+            body = json.dumps({
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json", "maxOutputTokens": 350}
+            }).encode()
+            for candidate in ["gemini-flash-lite-latest", "gemini-3-flash-preview", model]:
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{candidate}:generateContent?key={key}"
                     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-                    with urllib.request.urlopen(req, timeout=60.0) as res:
+                    with urllib.request.urlopen(req, timeout=4.0) as res:
                         out = json.loads(json.loads(res.read().decode())["candidates"][0]["content"]["parts"][0]["text"])
                         if isinstance(out.get("root_cause_analysis"), dict):
                             rc = out["root_cause_analysis"]
