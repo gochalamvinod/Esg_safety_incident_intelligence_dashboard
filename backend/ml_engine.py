@@ -8,12 +8,12 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer  # Converts text into numerical vectors
+from sklearn.linear_model import LogisticRegression         # learns and Predicts incident categories and severity
+from sklearn.dummy import DummyClassifier                   # Creates a baseline classification model(topper who gives correct answer)
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support  # Evaluates model performance
+from sklearn.metrics.pairwise import cosine_similarity      # Measures similarity between incidents
+from sklearn.cluster import KMeans                          # Groups similar incidents into clusters
 
 # 1. Environment configuration loader
 def _load_env():
@@ -26,7 +26,7 @@ def _load_env():
                     os.environ.setdefault(k.strip(), v.strip())
 _load_env()
 
-# 2. Domain Knowledge Lexicons & ISO 45001 / ISO 14001 CAPA Matrix
+# 2. Domain Knowledge Lexicons & ISO 45001(health and safty) / ISO 14001(environment) CAPA Matrix
 HAZARDS = {
     "Electrical": ["electric", "arc", "flash", "breaker", "voltage", "cable", "transformer"],
     "Working at Heights": ["height", "harness", "scaffold", "ladder", "fall", "nacelle"],

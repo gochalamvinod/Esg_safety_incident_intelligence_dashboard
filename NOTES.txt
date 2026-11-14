@@ -1,0 +1,47 @@
+LIBS USED 
+----------------------------
+
+sys
+pathlib
+os
+fastapi
+pydantic
+numpy
+pandas
+sklearn
+
+PIPELINE 
+---------------------------
+
+  [INPUT]: "Worker slipped on wet solar walkway, minor ankle sprain"
+     │
+     ▼
+  STAGE 1: Text Normalization & Cleaning
+  • Strips extra whitespace, lowercase conversion, removes unwanted characters.
+     │
+     ▼
+  STAGE 2: TF-IDF Vectorization
+  • Converts cleaned words into numerical vectors based on keyword rarity.
+     │
+     ▼
+  STAGE 3: Classical ML Classification
+  • Logistic Regression models calculate Category probabilities & Severity rating in <15ms.
+     │
+     ▼
+  STAGE 4: Domain Safety Guardrails
+  • Scans for high-consequence keywords ("fatal", "arc flash") to ensure critical alerts are never missed.
+     │
+     ▼
+  STAGE 5: Precedent Retrieval (RAG)
+  • Runs Cosine Similarity to find the 3 most similar accidents from company history.
+     │
+     ▼
+  STAGE 6: ISO 45001 / ISO 14001 Rule Mapping
+  • Automatically selects verified Corrective & Preventive Actions (CAPA).
+     │
+     ▼
+  STAGE 7: Generative AI Synthesis (Gemini Flash Lite)
+  • Produces a 2-sentence executive brief, root causes, and SEBI BRSR compliance impact.
+     │
+     ▼
+  [OUTPUT]: Complete, structured Incident Intelligence Dossier ready for HSE leadership!
